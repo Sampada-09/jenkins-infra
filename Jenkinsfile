@@ -1,55 +1,32 @@
 pipeline {
-  agent any
+    agent any
 
-  environment {
-    GHCR_USER = 'Sampada-09'       // GitHub username for login
-    GHCR_REPO = 'sampada-09'       // lowercase for Docker repo
-    IMAGE_NAME = "ghcr.io/${GHCR_REPO}/react-frontend:latest"
-  }
-
-  stages {
-    stage('Checkout') {
-      steps {
-        checkout scm
-      }
-    }
-
-    stage('Build Docker Image') {
-      steps {
-        sh "docker build -t ${IMAGE_NAME} ."
-      }
-    }
-
-    stage('Login to GHCR') {
-      steps {
-        withCredentials([string(credentialsId: 'GHCR_PAT', variable: 'TOKEN')]) {
-          sh 'echo $TOKEN | docker login ghcr.io -u $GHCR_USER --password-stdin'
+    stages {
+        stage('Checkout') {
+            steps {
+                echo "Checking out source code..."
+                checkout scm
+            }
         }
-      }
-    }
 
-    stage('Push Docker Image') {
-    steps {
-        sh "docker push ${IMAGE_NAME}"
-        echo "Docker image pushed to GHCR successfully! -t ${IMAGE_NAME}"
-    }
-}
-
-    stage('Deploy to Render') {
-      steps {
-        withCredentials([string(credentialsId: 'RENDER_DEPLOY_HOOK', variable: 'HOOK')]) {
-          sh 'curl "$HOOK"'
+        stage('Build') {
+            steps {
+                echo "Running a dummy build step..."
+                sh 'echo "Pretend I am building the React app 🏗️"'
+            }
         }
-      }
-    }
-  }
 
-  post {
-    success {
-      echo ' Docker image pushed to GHCR and deploy triggered on Render!'
+        stage('Test') {
+            steps {
+                echo "Running a test step..."
+                sh 'echo "Pretend I am running tests ✅"'
+            }
+        }
     }
-    failure {
-      echo ' Pipeline failed'
+
+    post {
+        always {
+            echo "Pipeline finished (success or fail) 🚦"
+        }
     }
-  }
 }

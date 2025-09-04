@@ -6,15 +6,16 @@ pipelineJob('react-frontend-pipeline') {
             scm {
                 git {
                     remote {
-                        url('https://github.com/your-org/react-frontend.git')  // 🔥 your app repo
+                        url('https://github.com/Sampada-09/react-frontend.git')
                     }
                     branch('main')
                 }
             }
-            scriptPath('Jenkinsfile') // your Jenkinsfile in the app repo
+            scriptPath('Jenkinsfile')
         }
     }
+
     triggers {
-        scm('H/5 * * * *') // optional: poll every 5 min (replace with webhook ideally)
+        githubPush()
     }
 }
